@@ -1,5 +1,8 @@
 # Spring Boot Application Configuration
 spring:
+  main:
+    allow-bean-definition-overriding: true
+
   application:
     name: event-management-api
 
@@ -25,7 +28,7 @@ spring:
   # JPA/Hibernate Configuration
   jpa:
     hibernate:
-      ddl-auto: ${DDL_AUTO:validate}
+      ddl-auto: ${DDL_AUTO:create}
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: ${SHOW_SQL:false}
@@ -156,3 +159,4 @@ logging:
   level:
     "[com.leminhbao.eventmanagement]": WARN
     root: WARN
+    web: debug

@@ -2,6 +2,7 @@ package com.leminhbao.eventmanagement.controller;
 
 import com.leminhbao.eventmanagement.dto.auth.JwtResponse;
 import com.leminhbao.eventmanagement.dto.auth.LoginRequest;
+import com.leminhbao.eventmanagement.dto.auth.RefreshTokenRequest;
 import com.leminhbao.eventmanagement.dto.auth.RegisterRequest;
 import com.leminhbao.eventmanagement.dto.common.ApiResponse;
 import com.leminhbao.eventmanagement.service.AuthService;
@@ -13,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Authentication management APIs")
 public class AuthController {
@@ -31,13 +32,13 @@ public class AuthController {
   @Operation(summary = "User registration", description = "Register a new user account")
   public ResponseEntity<ApiResponse<String>> register(@Valid @RequestBody RegisterRequest registerRequest) {
     String message = authService.register(registerRequest);
-    return ResponseEntity.ok(ApiResponse.success(message));
+    return ResponseEntity.ok(ApiResponse.successMessage(message));
   }
 
   @PostMapping("/refresh")
   @Operation(summary = "Refresh token", description = "Refresh JWT token using refresh token")
-  public ResponseEntity<ApiResponse<JwtResponse>> refreshToken(@RequestParam String refreshToken) {
-    JwtResponse jwtResponse = authService.refreshToken(refreshToken);
+  public ResponseEntity<ApiResponse<JwtResponse>> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+    JwtResponse jwtResponse = authService.refreshToken(request.getRefreshToken());
     return ResponseEntity.ok(ApiResponse.success("Token refreshed successfully", jwtResponse));
   }
 
@@ -47,6 +48,6 @@ public class AuthController {
     // In a stateless JWT implementation, logout is handled on the client side
     // by removing the token. For enhanced security, you could implement
     // a token blacklist here.
-    return ResponseEntity.ok(ApiResponse.success("Logout successful"));
+    return ResponseEntity.ok(ApiResponse.successMessage("Logout successful"));
   }
 }

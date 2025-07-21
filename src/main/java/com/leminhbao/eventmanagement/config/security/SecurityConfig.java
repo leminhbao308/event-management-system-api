@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -26,11 +27,12 @@ public class SecurityConfig {
 
   private final CustomUserDetailsService customUserDetailsService;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final CorsConfigurationSource corsConfigurationSource;
 
   private static final String[] PUBLIC_ENDPOINTS = {
-      "/api/v1/auth/**",
-      "/api/v1/public/**",
-      "/api/v1/health",
+      "/auth/**",
+      "/public/**",
+      "/health",
       "/actuator/health",
       "/actuator/info",
       "/v3/api-docs/**",
@@ -41,12 +43,13 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-            .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-            .requestMatchers("/api/v1/organizer/**").hasAnyRole("ADMIN", "ORGANIZER")
+            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .requestMatchers("/organizer/**").hasAnyRole("ADMIN", "ORGANIZER")
             .anyRequest().authenticated())
         .authenticationProvider(authenticationProvider())
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

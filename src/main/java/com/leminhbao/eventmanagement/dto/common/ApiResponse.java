@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +25,7 @@ public class ApiResponse<T> {
     return ApiResponse.<T>builder()
         .success(true)
         .data(data)
+        .timestamp(getCurrentTimestamp())
         .build();
   }
 
@@ -30,6 +34,15 @@ public class ApiResponse<T> {
         .success(true)
         .message(message)
         .data(data)
+        .timestamp(getCurrentTimestamp())
+        .build();
+  }
+
+  public static <T> ApiResponse<T> successMessage(String message) {
+    return ApiResponse.<T>builder()
+        .success(true)
+        .message(message)
+        .timestamp(getCurrentTimestamp())
         .build();
   }
 
@@ -37,6 +50,20 @@ public class ApiResponse<T> {
     return ApiResponse.<T>builder()
         .success(false)
         .message(message)
+        .timestamp(getCurrentTimestamp())
         .build();
+  }
+
+  public static <T> ApiResponse<T> error(String message, String path) {
+    return ApiResponse.<T>builder()
+        .success(false)
+        .message(message)
+        .path(path)
+        .timestamp(getCurrentTimestamp())
+        .build();
+  }
+
+  private static String getCurrentTimestamp() {
+    return LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
   }
 }

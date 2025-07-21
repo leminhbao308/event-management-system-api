@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/events")
+@RequestMapping("/admin/events")
 @Tag(name = "Admin Event Management", description = "Admin APIs for event management")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
@@ -66,28 +66,28 @@ public class AdminEventController {
   @Operation(summary = "Publish event")
   public ResponseEntity<ApiResponse<String>> publishEvent(@PathVariable UUID eventId) {
     adminEventService.publishEvent(eventId);
-    return ResponseEntity.ok(ApiResponse.success("Event published successfully", null));
+    return ResponseEntity.ok(ApiResponse.successMessage("Event published successfully"));
   }
 
   @PutMapping("/{eventId}/unpublish")
   @Operation(summary = "Unpublish event")
   public ResponseEntity<ApiResponse<String>> unpublishEvent(@PathVariable UUID eventId) {
     adminEventService.unpublishEvent(eventId);
-    return ResponseEntity.ok(ApiResponse.success("Event unpublished successfully", null));
+    return ResponseEntity.ok(ApiResponse.successMessage("Event unpublished successfully"));
   }
 
   @PutMapping("/{eventId}/cancel")
   @Operation(summary = "Cancel event")
   public ResponseEntity<ApiResponse<String>> cancelEvent(@PathVariable UUID eventId) {
     adminEventService.cancelEvent(eventId);
-    return ResponseEntity.ok(ApiResponse.success("Event cancelled successfully", null));
+    return ResponseEntity.ok(ApiResponse.successMessage("Event cancelled successfully"));
   }
 
   @DeleteMapping("/{eventId}")
   @Operation(summary = "Delete event")
   public ResponseEntity<ApiResponse<String>> deleteEvent(@PathVariable UUID eventId) {
     adminEventService.deleteEvent(eventId);
-    return ResponseEntity.ok(ApiResponse.success("Event deleted successfully", null));
+    return ResponseEntity.ok(ApiResponse.successMessage("Event deleted successfully"));
   }
 
   @GetMapping("/statistics")

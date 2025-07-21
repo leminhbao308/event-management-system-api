@@ -104,27 +104,31 @@ public class AuthService {
   }
 
   public JwtResponse refreshToken(String refreshToken) {
-    if (tokenProvider.validateToken(refreshToken)) {
-      String username = tokenProvider.getUsernameFromToken(refreshToken);
-      User user = userRepository.findByUsername(username)
-          .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-      String newToken = tokenProvider.generateToken(username);
-      String newRefreshToken = tokenProvider.generateRefreshToken(username);
-
-      Set<String> roles = user.getRoles().stream()
-          .map(Role::getName)
-          .collect(Collectors.toSet());
-
-      return JwtResponse.builder()
-          .token(newToken)
-          .refreshToken(newRefreshToken)
-          .username(user.getUsername())
-          .email(user.getEmail())
-          .roles(roles)
-          .build();
-    } else {
-      throw new BadRequestException("Invalid refresh token");
+    if (refreshToken == null || refreshToken.trim().isEmpty()) {
+      throw new BadRequestException("Refresh token cannot be null or empty");
     }
+
+    if (Boolean.FALSE.equals(tokenProvider.validateToken(refreshToken))) {
+      throw new BadRequestException("Invalid or expired refresh token");
+    }
+
+    String username = tokenProvider.getUsernameFromToken(refreshToken);
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+    String newToken = tokenProvider.generateToken(username);
+    String newRefreshToken = tokenProvider.generateRefreshToken(username);
+
+    Set<String> roles = user.getRoles().stream()
+        .map(Role::getName)
+        .collect(Collectors.toSet());
+
+    return JwtResponse.builder()
+        .token(newToken)
+        .refreshToken(newRefreshToken)
+        .username(user.getUsername())
+        .email(user.getEmail())
+        .roles(roles)
+        .build();
   }
 }

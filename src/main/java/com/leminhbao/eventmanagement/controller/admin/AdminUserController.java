@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/users")
+@RequestMapping("/admin/users")
 @Tag(name = "Admin User Management", description = "Admin APIs for user management")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
@@ -55,14 +55,14 @@ public class AdminUserController {
   @Operation(summary = "Activate user account")
   public ResponseEntity<ApiResponse<String>> activateUser(@PathVariable UUID userId) {
     adminUserService.activateUser(userId);
-    return ResponseEntity.ok(ApiResponse.success("User activated successfully", null));
+    return ResponseEntity.ok(ApiResponse.successMessage("User activated successfully"));
   }
 
   @PutMapping("/{userId}/deactivate")
   @Operation(summary = "Deactivate user account")
   public ResponseEntity<ApiResponse<String>> deactivateUser(@PathVariable UUID userId) {
     adminUserService.deactivateUser(userId);
-    return ResponseEntity.ok(ApiResponse.success("User deactivated successfully", null));
+    return ResponseEntity.ok(ApiResponse.successMessage("User deactivated successfully"));
   }
 
   @PutMapping("/{userId}/roles/{roleId}")
@@ -71,7 +71,7 @@ public class AdminUserController {
       @PathVariable UUID userId,
       @PathVariable UUID roleId) {
     adminUserService.assignRole(userId, roleId);
-    return ResponseEntity.ok(ApiResponse.success("Role assigned successfully", null));
+    return ResponseEntity.ok(ApiResponse.successMessage("Role assigned successfully"));
   }
 
   @DeleteMapping("/{userId}/roles/{roleId}")
@@ -80,13 +80,13 @@ public class AdminUserController {
       @PathVariable UUID userId,
       @PathVariable UUID roleId) {
     adminUserService.removeRole(userId, roleId);
-    return ResponseEntity.ok(ApiResponse.success("Role removed successfully", null));
+    return ResponseEntity.ok(ApiResponse.successMessage("Role removed successfully"));
   }
 
   @DeleteMapping("/{userId}")
   @Operation(summary = "Delete user account")
   public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable UUID userId) {
     adminUserService.deleteUser(userId);
-    return ResponseEntity.ok(ApiResponse.success("User deleted successfully", null));
+    return ResponseEntity.ok(ApiResponse.successMessage("User deleted successfully"));
   }
 }
